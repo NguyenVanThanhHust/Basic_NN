@@ -5,4 +5,4 @@ https://foundationsofdl.com/2021/12/12/neural-network-from-scratch-part-5-c-deep
 https://github.com/Apiquet/DeepLearningFrameworkFromScratchCpp
 https://www.deepideas.net/deep-learning-from-scratch-theory-and-implementation/
 https://github.com/farzingkh/EigenFlow
-
+https://github.com/AlexeyAB/darknet
