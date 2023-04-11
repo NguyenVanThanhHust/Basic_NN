@@ -1,21 +1,22 @@
 import numpy as np
 from src.layers.layer import Layer
 
-class FullyConnected(Layer):
+class Linear(Layer):
     def __init__(self, in_dim, out_dim) -> None:
-        super().__init__(in_dim)
+        np.random.seed(42)
         self.in_dim = in_dim
         self.out_dim = out_dim
         self.w = None
         self.b = None
         self.cache = {}
+        self.init()
 
     def init(self):
         self.w = np.random.rand(self.in_dim, self.out_dim) * np.sqrt(2 / self.in_dim)
-        self.b = np.zeros(1, self.out_dim)
+        self.b = np.zeros((1, self.out_dim))
 
     def forward(self, input_tensor, training=True):
-        output_tensor = np.dot(input_tensor, self.w.T) + self.b
+        output_tensor = np.dot(input_tensor, self.w) + self.b
         if training:
             self.cache.update({'input_tensor': input_tensor, 'output_tensor':output_tensor})
         return output_tensor
