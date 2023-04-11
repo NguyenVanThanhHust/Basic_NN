@@ -1,2 +1,2 @@
 import numpy as np
-from src.layers import Layer
+from src.layers.layer import Layer
