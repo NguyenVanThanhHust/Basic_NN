@@ -14,3 +14,5 @@ class TestLayer(unittest.TestCase):
         true_output = np.dot(input_tensor, linear_layer.get_params()[0]) + linear_layer.get_params()[1]
         compute_output = linear_layer.forward(input_tensor)
         np.testing.assert_array_almost_equal(compute_output, true_output)
+
+    
