@@ -6,3 +6,5 @@ https://github.com/Apiquet/DeepLearningFrameworkFromScratchCpp
 https://www.deepideas.net/deep-learning-from-scratch-theory-and-implementation/
 https://github.com/farzingkh/EigenFlow
 https://github.com/AlexeyAB/darknet
+
+https://towardsdatascience.com/lets-code-a-neural-network-in-plain-numpy-ae7e74410795
