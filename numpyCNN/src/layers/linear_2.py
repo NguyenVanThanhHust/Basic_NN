@@ -19,8 +19,8 @@ def init_layers(nn_arch, random_seed=42):
     for idx, layer in enumerate(nn_arch):
         in_dim, out_dim = layer["in_dim"], layer["out_dim"]
         random_vector = np.random.rand(out_dim, in_dim)
-        params_values["W_" + str(idx)] = random_vector*0.5
-        params_values["b_" + str(idx)] = np.random.rand(output_dim, 1)
+        params_values["W_" + str(idx+1)] = random_vector*0.5
+        params_values["b_" + str(idx+1)] = np.random.rand(output_dim, 1)
     return params_values 
 
 def relu(Z):
@@ -50,4 +50,19 @@ def single_forward(input_tensor, weight, bias, activation_func="relu"):
     z_output = act_func(output)
     return z_output, output
 
-def forward_full()
+def forward_full(input_tensor, params_values, nn_arch):
+    memory = {}
+    A_curr = X
+    for idx, layer in enumerate(nn_arch):
+        layer_idx = idx + 1
+        A_prev = A_curr
+        act_func = layer["activation"]
+        W_curr = params_values["W_" + str(layer_idx)]
+        b_curr = params_values["b_" + str(layer_idx)]
+        A_curr, Z_curr = single_forward(A_prev, W_curr, b_curr)
+
+        memory["A_" + str(idx)] = A_curr
+        memory["Z_" + str(idx)] = Z_curr
+    
+    return A_curr, memory
+    
