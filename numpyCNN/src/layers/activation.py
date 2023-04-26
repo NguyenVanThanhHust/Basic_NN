@@ -2,16 +2,16 @@ import numpy as np
 from src.layers.layer import Layer
 
 class ReLU(Layer):
-    def __init__(self, input_shape) -> None:
+    def __init__(self, input_dim, **kwargs) -> None:
         """
         Initializes the layer
         
         Parameters:
         ----------
-        input_shape: int or tuple
+        input_dim: int or tuple
             Shape of the input data
         """
-        self.input_shape = input_shape
+        self.input_dim = input_dim
         self.cache = None
     
     def forward(self, input_array, training):
@@ -31,8 +31,7 @@ class ReLU(Layer):
         return out
 
     def backward(self, prev_d=None):
-        assert self.cache, "Relu must have cache"
-        out = np.ones(input_shape)
+        out = np.ones(self.input_dim)
         out[self.cache < 0] = 0
         return out
 
@@ -43,19 +42,19 @@ class ReLU(Layer):
         return
 
     def get_output_dim(self, ):
-        return self.input_shape
+        return self.input_dim
 
 class Sigmoid(Layer):
-    def __init__(self, input_shape) -> None:
+    def __init__(self, input_dim) -> None:
         """
         Initializes the layer
         
         Parameters:
         ----------
-        input_shape: int or tuple
+        input_dim: int or tuple
             Shape of the input data
         """
-        self.input_shape = input_shape
+        self.input_dim = input_dim
         self.cache = None
     
     def forward(self, input_array, training):
@@ -75,8 +74,7 @@ class Sigmoid(Layer):
         return out
 
     def backward(self, ):
-        out = np.ones(input_shape)
-        out[self.cache < 0] = 0
+        out = self.cache*(1-self.cache)
         return out
 
     def update_params(self, dw, db):
@@ -86,4 +84,4 @@ class Sigmoid(Layer):
         return
 
     def get_output_dim(self, ):
-        return self.input_shape
+        return self.input_dim

@@ -5,12 +5,12 @@ import numpy as np
 # Define network architecute
 nn_arch = [
     {"in_dim": 2, "out_dim": 10, "activation": "relu"},
-    {"in_dim", 10, "out_dim": 20, "activation", "relu"}, 
-    {"in_dim", 20, "out_dim": 40, "activation", "relu"}, 
-    {"in_dim", 40, "out_dim": 20, "activation", "relu"}, 
-    {"in_dim", 40, "out_dim": 20, "activation", "relu"}, 
-    {"in_dim", 20, "out_dim": 10, "activation", "relu"}, 
-    {"in_dim", 10, "out_dim": 1, "activation", "sigmoid"}, 
+    {"in_dim": 10, "out_dim": 20, "activation": "relu"}, 
+    {"in_dim": 20, "out_dim": 40, "activation": "relu"}, 
+    {"in_dim": 40, "out_dim": 20, "activation": "relu"}, 
+    {"in_dim": 40, "out_dim": 20, "activation": "relu"}, 
+    {"in_dim": 20, "out_dim": 10, "activation": "relu"}, 
+    {"in_dim": 10, "out_dim": 1, "activation": "sigmoid"}, 
 ]
 
 def init_layers(nn_arch, random_seed=42):

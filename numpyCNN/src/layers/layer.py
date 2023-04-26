@@ -1,11 +1,11 @@
 class Layer:
-    def __init__(self, in_dim) -> None:
+    def __init__(self, name, input_dim, output_dim) -> None:
         """
         Initializes the layer
         
         Parameters:
         ----------
-        in_dim: int or tuple
+        input_dim: int or tuple
             Shape of the input data
         """
         raise NotImplementedError
@@ -36,3 +36,5 @@ class Layer:
     def get_output_dim(self, ):
         raise NotImplementedError
     
+    def __repr__(self) -> str:
+        raise NotImplementedError

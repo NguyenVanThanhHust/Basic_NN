@@ -2,10 +2,10 @@ import numpy as np
 from src.layers.layer import Layer
 
 class Linear(Layer):
-    def __init__(self, in_dim, out_dim) -> None:
-        np.random.seed(42)
-        self.in_dim = in_dim
-        self.out_dim = out_dim
+    def __init__(self, name="linear", input_dim=None, output_dim=None) -> None:
+        self.name = name
+        self.in_dim = input_dim
+        self.out_dim = output_dim
         self.w = None
         self.b = None
         self.cache = {}
@@ -39,3 +39,6 @@ class Linear(Layer):
     def get_output_dim(self):
         return self.out_dim
     
+    def __repr__(self, info) -> str:
+        
+        return super().__repr__()
