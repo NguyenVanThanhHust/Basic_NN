@@ -8,6 +8,7 @@ class Linear(Layer):
         self.out_dim = output_dim
         self.w = None
         self.b = None
+        self.name = name
         self.cache = {}
         self.init()
 
@@ -16,7 +17,7 @@ class Linear(Layer):
         self.b = np.zeros((1, self.out_dim))
 
     def forward(self, input_tensor, training=True):
-        output_tensor = np.dot(input_tensor, self.w.T) + self.b.T
+        output_tensor = np.dot(input_tensor, self.w.T) + self.b
         if training:
             self.cache.update({'input_tensor': input_tensor, 'output_tensor':output_tensor})
         return output_tensor
@@ -27,9 +28,11 @@ class Linear(Layer):
         dw = 1/batch_size * np.dot(d_output.T, input_tensor)
         db = 1/batch_size * d_output.sum(axis=0, keepdims=True)
         d_input = np.dot(d_output, self.w)
-        return d_input, dw, db
+        self.cache.update({'dw':dw, 'db':db})
+        return dw
 
-    def update_params(self, dw, db, alpha=0.1):
+    def update_params(self, alpha=0.1):
+        dw, db = self.cache['dw'], self.cache['db']
         self.w = self.w - alpha*dw
         self.b = self.b - alpha*db
 
@@ -39,6 +42,5 @@ class Linear(Layer):
     def get_output_dim(self):
         return self.out_dim
     
-    def __repr__(self, info) -> str:
-        
-        return super().__repr__()
+    def __repr__(self) -> str:
+        return self.name + " input dim: " + str(self.in_dim) + " output dim: " + str(self.out_dim) 

@@ -27,7 +27,7 @@ class Layer:
     def backward(self, da):
         raise NotImplementedError
 
-    def update_params(self, dw, db):
+    def update_params(self):
         raise NotImplementedError
     
     def get_params(self,):

@@ -39,7 +39,7 @@ class Conv(Layer):
                 current_kernel = self.kernel[channel, :, :, :]
                 for h_index in range(output_h):
                     v_start = h_index * self.stride
-                    v_end = v_start + self.
+                    v_end = v_start + self.stride
 
         return super().forward(input, training)
     
@@ -48,7 +48,10 @@ class Conv(Layer):
     
     def get_params(self):
         return self.kernel, self.bias
-    
+
+    def update_params(self):
+        return 
+            
     def get_output_dim(self):
         return self.out_channel
     

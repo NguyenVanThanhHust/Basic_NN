@@ -2,7 +2,7 @@ import numpy as np
 from src.layers.layer import Layer
 
 class ReLU(Layer):
-    def __init__(self, input_dim, **kwargs) -> None:
+    def __init__(self, input_dim, name="relu") -> None:
         """
         Initializes the layer
         
@@ -12,6 +12,7 @@ class ReLU(Layer):
             Shape of the input data
         """
         self.input_dim = input_dim
+        self.name = name
         self.cache = None
     
     def forward(self, input_array, training):
@@ -27,15 +28,16 @@ class ReLU(Layer):
         numpy.array: output of this layer
         """
         out = np.copy(input_array)
+        self.cache = input_array
         out[out < 0] = 0
         return out
 
-    def backward(self, prev_d=None):
-        out = np.ones(self.input_dim)
+    def backward(self, prev_d):
+        out = np.ones(prev_d.shape)
         out[self.cache < 0] = 0
         return out
 
-    def update_params(self, dw, db):
+    def update_params(self):
         return 
     
     def get_params(self,):
@@ -44,8 +46,12 @@ class ReLU(Layer):
     def get_output_dim(self, ):
         return self.input_dim
 
+    def __repr__(self):
+        return self.name  + " input dim: " + str(self.input_dim) + " output dim: " + str(self.input_dim)
+
+
 class Sigmoid(Layer):
-    def __init__(self, input_dim) -> None:
+    def __init__(self, input_dim, name="sigmoid") -> None:
         """
         Initializes the layer
         
@@ -55,6 +61,7 @@ class Sigmoid(Layer):
             Shape of the input data
         """
         self.input_dim = input_dim
+        self.name = name
         self.cache = None
     
     def forward(self, input_array, training):
@@ -73,11 +80,11 @@ class Sigmoid(Layer):
         self.cache = out
         return out
 
-    def backward(self, ):
-        out = self.cache*(1-self.cache)
+    def backward(self, prev_d):
+        out = prev_d * self.cache*(1-self.cache)
         return out
 
-    def update_params(self, dw, db):
+    def update_params(self,):
         return 
     
     def get_params(self,):
@@ -85,3 +92,6 @@ class Sigmoid(Layer):
 
     def get_output_dim(self, ):
         return self.input_dim
+
+    def __repr__(self):
+        return self.name  + " input dim: " + str(self.input_dim) + " output dim: " + str(self.input_dim)
