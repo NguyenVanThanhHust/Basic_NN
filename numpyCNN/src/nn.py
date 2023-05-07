@@ -1,12 +1,10 @@
+import os, sys
+
 import numpy as np
 from src.layers.linear import Linear
 from src.layers.activation import ReLU, Sigmoid
 
-layers = {
-    "linear": Linear, 
-    "relu": ReLU, 
-    "sigmoid": Sigmoid
-}
+
 class NeuralNetwork():
     def __init__(self, nn_arch):
         self.layers = []
@@ -31,11 +29,11 @@ class NeuralNetwork():
         return output
 
     def backward(self, loss_derivative):
-        prev_derivatie = loss_derivative
+        prev_derivative = loss_derivative
         for layer in reversed(self.layers):
-            derivative = layer.backward(prev_derivatie)
-            print(derivative.shape)
-            prev_derivatie = derivative
+            derivative = layer.backward(prev_derivative)
+            prev_derivative = derivative
+            
 
     def update_params(self):
         for layer in reversed(self.layers):

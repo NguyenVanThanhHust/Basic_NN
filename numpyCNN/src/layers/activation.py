@@ -1,3 +1,4 @@
+import os, sys
 import numpy as np
 from src.layers.layer import Layer
 
@@ -13,7 +14,7 @@ class ReLU(Layer):
         """
         self.input_dim = input_dim
         self.name = name
-        self.cache = None
+        self.cache = {}
     
     def forward(self, input_array, training):
         """
@@ -28,13 +29,13 @@ class ReLU(Layer):
         numpy.array: output of this layer
         """
         out = np.copy(input_array)
-        self.cache = input_array
+        self.cache["input_tensor"] = input_array
         out[out < 0] = 0
         return out
 
     def backward(self, prev_d):
-        out = np.ones(prev_d.shape)
-        out[self.cache < 0] = 0
+        out = np.ones(self.cache["input_tensor"].shape)
+        out[self.cache["input_tensor"] < 0] = 0
         return out
 
     def update_params(self):
@@ -62,7 +63,7 @@ class Sigmoid(Layer):
         """
         self.input_dim = input_dim
         self.name = name
-        self.cache = None
+        self.cache = {}
     
     def forward(self, input_array, training):
         """
@@ -77,11 +78,11 @@ class Sigmoid(Layer):
         numpy.array: output of this layer
         """
         out = 1 / (1 + np.exp(-input_array))
-        self.cache = out
+        self.cache["input_tensor"] = out
         return out
 
     def backward(self, prev_d):
-        out = prev_d * self.cache*(1-self.cache)
+        out = self.cache["input_tensor"]*(1-self.cache["input_tensor"])
         return out
 
     def update_params(self,):
