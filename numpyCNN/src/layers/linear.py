@@ -35,16 +35,9 @@ class Linear(Layer):
         return dw
 
     def update_params(self, alpha=0.01):
-        try:
-            dw, db = self.cache['dw'], self.cache['db']
-            self.w = self.w - alpha*dw
-            self.b = self.b - alpha*db
-        except Exception as e:
-            print(self.w.shape, self.b.shape, dw.shape, db.shape)
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-            sys.exit()
+        dw, db = self.cache['dw'], self.cache['db']
+        self.w = self.w - alpha*dw
+        self.b = self.b - alpha*db
 
     def get_params(self):
         return self.w, self.b
