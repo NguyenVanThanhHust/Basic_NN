@@ -2,7 +2,7 @@ import numpy as np
 from src.layers.layer import Layer
 
 class Conv(Layer):
-    def __init__(self, in_channel, out_channel, kernel_size, stride=0, padding_type='none') -> None:
+    def __init__(self, in_channel, out_channel, kernel_size, stride=0, padding_type='none', name='conv') -> None:
         self.in_channel = in_channel
         self.out_channel = out_channel
         self.kernel_size = kernel_size

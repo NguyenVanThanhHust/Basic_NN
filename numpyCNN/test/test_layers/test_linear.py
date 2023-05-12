@@ -9,14 +9,12 @@ from sklearn.datasets import make_blobs
 
 from loguru import logger
 
-
 sys.path.append("..")
 sys.path.append("../..")
 from src.layers.linear import Linear
 from src.cost import CrossEntropyLoss
 
 def test_linear_forward():
-    np.random.seed(42)
     batch_size = 2
     input_dim = 8
     output_dim = 4
@@ -28,6 +26,7 @@ def test_linear_forward():
 
 
 def main():
+    np.random.seed(42)
     print("Test forward")
     test_linear_forward()
     print("forward pass")
@@ -37,8 +36,9 @@ def main():
     NUM_ITER = int(TRAIN_SIZE / BATCH_SIZE) - 1
     NUM_TEST = int(TEST_SIZE / BATCH_SIZE) - 1
     RANDOM_SEED = 42
+    NUM_FEATURES = 2
 
-    X_data, y_data = make_blobs((TRAIN_SIZE + TEST_SIZE), n_features=2, centers=2, random_state=RANDOM_SEED)
+    X_data, y_data = make_blobs((TRAIN_SIZE + TEST_SIZE), n_features=NUM_FEATURES, centers=2, random_state=RANDOM_SEED)
     y_label = []
     for y in y_data:
         if y == 0:
@@ -50,7 +50,7 @@ def main():
     X_train, y_train = X_data[:TRAIN_SIZE], y_label[:TRAIN_SIZE]
     X_test, y_test = X_data[TRAIN_SIZE:], y_label[TRAIN_SIZE:]
     
-    linear_layer = Linear("linear", 2, 2)
+    linear_layer = Linear("linear", NUM_FEATURES, 2)
 
     acc = 0.0
     tp = 0
