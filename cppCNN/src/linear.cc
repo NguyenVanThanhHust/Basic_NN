@@ -16,7 +16,7 @@ Tensor::~Tensor()
     delete[] data;
 };
 
-LinearLayer::LinearLayer(int input_dim_, int output_dim_, std::string layer_name_="linear")
+LinearLayer::LinearLayer(int input_dim_, int output_dim_, std::string layer_name_)
 {
     input_dim = input_dim_;
     output_dim = output_dim_;

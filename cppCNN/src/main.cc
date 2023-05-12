@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
     int label;
     while (infile >> ele1 >> ele2 >> label)
     {
-        cout<<elel<<" "<<ele2<<" "<<label<<endl;
+        cout<<ele1<<" "<<ele2<<" "<<label<<endl;
     }
     
 }
