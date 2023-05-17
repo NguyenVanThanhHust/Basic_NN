@@ -36,11 +36,9 @@ def test_convolution_forward():
     numpy_conv = Conv(3, 8, (4, 3), kernel_weight=kernel_numpy)
     output_numpy = numpy_conv.forward(input_array)
     output_numpy = output_numpy.sum(axis=2)
-    # output_numpy = np.round(output_numpy, 4)
     
     output_torch = output_torch.detach().cpu().numpy()
     np.testing.assert_almost_equal(output_torch, output_numpy)
-
 
 def main():
     np.random.seed(42)
