@@ -60,11 +60,14 @@ class Conv(Layer):
                         output_patch = output_patch.sum(axis=4)
                         output_patch = output_patch.sum(axis=3)
                         output_tensor[image_index, channel, :, h_index, w_index] = output_patch                             
-
+        self.cache["input_tensor"] = input_tensor
+        self.cache["output_tensor"] = output_tensor
         return output_tensor
     
-    def backward(self, da):
-        return super().backward(da)
+    def backward(self, prev_d):
+        batch_size, out_channel, output_h, output_w = prev_d.shape
+        
+        return d_weight, d_input
     
     def get_params(self):
         return self.kernel

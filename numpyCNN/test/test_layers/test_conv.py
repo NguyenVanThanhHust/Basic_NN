@@ -7,8 +7,6 @@ import math
 import matplotlib
 import matplotlib.pyplot as plt
 
-from sklearn.datasets import make_blobs
-
 from loguru import logger
 
 sys.path.append("..")

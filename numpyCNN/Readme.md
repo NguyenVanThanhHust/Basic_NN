@@ -1,2 +1,3 @@
-https://github.com/SkalskiP/ILearnDeepLearning.py
-https://towardsdatascience.com/lets-code-a-neural-network-in-plain-numpy-ae7e74410795
+# TODO
+- [ ] Replace raw test with compare with Pytorch for Linear layer
+- [ ] Backward implementation for Convolution

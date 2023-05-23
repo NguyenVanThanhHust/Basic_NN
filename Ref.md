@@ -7,4 +7,5 @@ https://github.com/Apiquet/DeepLearningFrameworkFromScratchCpp
 https://github.com/farzingkh/EigenFlow
 https://github.com/AlexeyAB/darknet
 
+https://github.com/SkalskiP/ILearnDeepLearning.py
 https://towardsdatascience.com/lets-code-a-neural-network-in-plain-numpy-ae7e74410795
