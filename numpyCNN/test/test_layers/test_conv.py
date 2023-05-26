@@ -22,7 +22,8 @@ def test_convolution_forward():
     
     input_torch = torch.from_numpy(input_array)
     
-    kernel_numpy = np.random.rand(8, 3, 4, 3)
+    out_channel, in_channel, k_y, k_x = 8, 3, 4, 3
+    kernel_numpy = np.random.rand(out_channel, in_channel, k_y, k_x)
     kernel_numpy = np.round(kernel_numpy, 4)
     kernel_torch = torch.from_numpy(kernel_numpy)
     

@@ -3,10 +3,13 @@ import numpy as np
 epsilon = 1e-20
 
 class CostFunction:
+    def __init__(self):
+        self.cache = {}
+        
     def forward(self, pred, gt):
         raise NotImplementedError
     
-    def grad(self, pred, gt):
+    def grad(self):
         raise NotImplementedError
     
 class MSELoss(CostFunction):

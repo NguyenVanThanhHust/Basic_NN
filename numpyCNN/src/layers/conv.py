@@ -64,9 +64,14 @@ class Conv(Layer):
         self.cache["output_tensor"] = output_tensor
         return output_tensor
     
-    def backward(self, prev_d):
-        batch_size, out_channel, output_h, output_w = prev_d.shape
-        
+    def backward(self, d_output):
+        batch_size, out_channel, output_h, output_w = d_output.shape
+        input_tensor = self.cache["input_tensor"]
+        batch_size, in_channel, input_h, output_w = input_tensor.shape
+        d_input = np.zeros((batch_size, out_channel, in_channel, input_h, output_w), dtype=np.float32)
+        d_weight = np.zeros((batch_size, out_channel, in_channel, self.kernel_size[0], self.kernel_size[1]), dtype=np.float32)
+
+        ##  Calculate derivative 
         return d_weight, d_input
     
     def get_params(self):

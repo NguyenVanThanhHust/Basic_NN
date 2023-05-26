@@ -32,7 +32,7 @@ class Linear(Layer):
         db = 1/batch_size * d_output.sum(axis=0, keepdims=True)
         assert dw.shape == self.w.shape, "expect same shape, get {} for self.w and {} for dw".format(self.w.shape, dw.shape)
         self.cache.update({'dw':dw, 'db':db})
-        return dw
+        return dw, db
 
     def update_params(self, alpha=0.01):
         dw, db = self.cache['dw'], self.cache['db']
