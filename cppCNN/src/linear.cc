@@ -1,20 +1,5 @@
 #include "linear.h"
 
-Tensor::Tensor(std::vector<int> size_)
-{
-    size = size_;
-    int total_size=1;
-    for (size_t i = 0; i < size.size(); i++)
-    {
-        total_size = total_size * size[i];
-    }
-    data = new float[total_size];
-};
-
-Tensor::~Tensor()
-{
-    delete[] data;
-};
 
 LinearLayer::LinearLayer(int input_dim_, int output_dim_, std::string layer_name_)
 {
@@ -33,16 +18,16 @@ LinearLayer::~LinearLayer()
 
 Tensor LinearLayer::forward(Tensor input_tensor)
 {
-    std::vector<int> size{2, 4};
-    Tensor output_tensor = Tensor(size);
+    int batch_size = input_tensor.size[0];
+    std::vector<int> output_size{batch_size, output_dim};
+    Tensor output_tensor = Tensor(output_size);
+
     return output_tensor;
 };
 
-Tensor LinearLayer::backward(Tensor prev_d)
+Tensor LinearLayer::backward(Tensor d_output)
 {
-    std::vector<int> size{2, 4};
-    Tensor output_tensor = Tensor(size);
-    return output_tensor;
+    int batch_size = d_output.size[0];
 };
 
 void LinearLayer::update_params()

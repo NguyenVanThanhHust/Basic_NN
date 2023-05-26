@@ -13,7 +13,7 @@ sys.path.append("..")
 sys.path.append("../..")
 from src.layers.conv import Conv
 
-def test_convolution_forward():
+def test_convolution():
     # How to assign kernel for Conv layer
     # https://discuss.pytorch.org/t/setting-custom-kernel-for-cnn-in-pytorch/27176/4
     batch_size = 2

@@ -1,8 +1,10 @@
-cmake_minimum_required(VERSION 3.5.1)
+cmake_minimum_required(VERSION 3.21 FATAL_ERROR)
+project(linear_cpp LANGUAGES CXX CUDA)
+
 message(STATUS "CMake version: ${CMAKE_VERSION}")
 set(CMAKE_CXX_STANDARD 17)
+find_package(CUDA REQUIRED)
 
-project(linear_sample)
 option(USE_CUDA "Use CUDA" ON)
 
 enable_language("CUDA")
@@ -18,12 +20,14 @@ include_directories(
     ${YAML_INCLUDE_DIRS}
 )
 
-add_executable(linear_cpp 
+add_executable(${PROJECT_NAME} 
+    src/tensor.h 
+    src/tensor.cc
     src/linear.h 
     src/linear.cc 
     src/main.cc
 )    
 
-target_link_libraries(linear_cpp 
+target_link_libraries(${PROJECT_NAME} 
     ${YAML_CPP_LIBRARIES}
 )

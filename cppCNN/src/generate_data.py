@@ -2,7 +2,7 @@ from sklearn.datasets import make_blobs
 
 def main():
     TRAIN_SIZE, TEST_SIZE = 2000, 400
-    NUM_FEATURES = 2
+    NUM_FEATURES = 256
     RANDOM_SEED=42
     X_data, y_data = make_blobs((TRAIN_SIZE + TEST_SIZE), \
         n_features=NUM_FEATURES, \
