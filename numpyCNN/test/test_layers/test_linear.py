@@ -14,27 +14,7 @@ sys.path.append("../..")
 from src.layers.linear import Linear
 from src.cost import MSELoss
 
-def test_linear_forward():
-    batch_size = 2
-    input_dim = 8
-    output_dim = 4
-    input_array = np.random.rand(batch_size, input_dim)
-    linear_numpy = Linear("linear", input_dim, output_dim)
-    input_array = input_array.astype(np.float32)
-    output_numpy = linear_numpy.forward(input_array)
-
-    input_torch = torch.from_numpy(input_array)
-    linear = nn.Linear(input_dim, output_dim, True)
-    with torch.no_grad():
-        linear.weight = nn.Parameter(torch.from_numpy(linear_numpy.w.T))
-        linear.bias = nn.Parameter(torch.from_numpy(linear_numpy.b))
-    input_torch = input_torch.double()
-    output_torch = linear(input_torch)
-
-    output_torch = output_torch.detach().cpu().numpy()
-    np.testing.assert_almost_equal(output_torch, output_numpy)
-
-def test_linear_backward():
+def test_linear():
     batch_size = 2
     input_dim = 8
     output_dim = 4
@@ -70,11 +50,12 @@ def test_linear_backward():
     output_torch = output_torch.detach().cpu().numpy()
 
     np.testing.assert_almost_equal(output_torch, output_numpy)
+    print("Pass forward test")
     np.testing.assert_almost_equal(loss_value_torch.detach().cpu().numpy(), loss_numpy)
+    print("Pass loss test")
     np.testing.assert_almost_equal(linear.weight.grad.detach().cpu().numpy(), dw.T)
     np.testing.assert_almost_equal(linear.bias.grad.detach().cpu().numpy(), db)
-    
-    return 
+    print("Pass backward test")
 
 def main():
     test_linear_forward()
