@@ -28,7 +28,6 @@ def test_linear():
     
     # Forward torch
     input_torch = torch.from_numpy(input_array)
-    target_torch = torch.from_numpy(target_numpy)
     linear = nn.Linear(input_dim, output_dim, True)
     with torch.no_grad():
         linear.weight = nn.Parameter(torch.from_numpy(linear_numpy.w.T))
@@ -36,12 +35,14 @@ def test_linear():
     input_torch = input_torch.double()
     output_torch = linear(input_torch)
 
+    # backward numpy
     mse_loss_numpy = MSELoss()
     loss_numpy = mse_loss_numpy.forward(output_numpy, target_numpy)
     d_output = mse_loss_numpy.backward()
     dw, db = linear_numpy.backward(d_output)
     
     # backward torch
+    target_torch = torch.from_numpy(target_numpy)
     target_torch = target_torch.double()
     l2_loss =  nn.MSELoss()
     loss_value_torch = l2_loss(output_torch, target_torch)

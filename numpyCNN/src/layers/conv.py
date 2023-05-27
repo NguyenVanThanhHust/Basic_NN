@@ -71,15 +71,28 @@ class Conv(Layer):
 
         ## Calculate derivative of kernel
         d_weight = np.zeros((batch_size, out_channel, in_channel, self.kernel_size[0], self.kernel_size[1]), dtype=np.float32)
-        for b in batch_size:
-            for d in out_channel:
-                for c in in_channel:
-                    
-        
+        for b in range(batch_size):
+            for d in range(out_channel):
+                for c in range(in_channel):
+                    for ky_index in range(self.kernel_size[0]):
+                        ky_start = ky_index* self.stride[0]
+                        ky_end = ky_start + output_h
+                        for kx_index in range(self.kernel_size[1]):
+                            kx_start = kx_index* self.stride[1]
+                            kx_end = kx_start + output_w
+                            input_patch = input_tensor[b, c, ky_start: ky_end, kx_start: kx_end]
+                            input_patch = input_patch[np.newaxis, np.newaxis, np.newaxis, :, :]                
+                            kernel = d_output[b, d, :, :]
+                            kernel = kernel[np.newaxis, np.newaxis, np.newaxis, :, :]
+                            temp_d_weight = input_patch * kernel
+                            d_weight[b, d, c, ky_index, kx_index] = temp_d_weight.mean()
+        d_weight = d_weight.mean(0)
+        print(self.kernel.shape,  d_weight.shape)            
+          
         ## Calculate derivative of input
         d_input = np.zeros((batch_size, out_channel, in_channel, input_h, output_w), dtype=np.float32)
         
-        return d_weight, d_input
+        return d_weight / batch_size, d_input
     
     def get_params(self):
         return self.kernel
