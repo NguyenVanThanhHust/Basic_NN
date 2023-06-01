@@ -22,17 +22,17 @@ def test_convolution():
     batch_size = 2
     input_c, input_h, input_w = 3, 16, 24
     input_array = np.random.rand(batch_size, input_c, input_h, input_w)
-    out_channel, in_channel, k_y, k_x = 8, 3, 4, 3
+    out_channel, in_channel, k_y, k_x = 8, 3, 3, 3
     kernel_numpy = np.random.rand(out_channel, in_channel, k_y, k_x)
     kernel_numpy = np.round(kernel_numpy, 4)
-    conv_numpy = Conv(3, 8, (4, 3), kernel_weight=kernel_numpy)
+    conv_numpy = Conv(in_channel, out_channel, (k_y, k_x), kernel_weight=kernel_numpy)
     output_numpy = conv_numpy.forward(input_array)
     output_numpy = output_numpy.sum(axis=2)
     
     # forward torch
     input_torch = torch.from_numpy(input_array)
     kernel_torch = torch.from_numpy(kernel_numpy)
-    conv = nn.Conv2d(8, 3, (4, 3), bias=False)
+    conv = nn.Conv2d(out_channel, in_channel, (k_y, k_x), bias=False)
     input_torch.requires_grad = True
     with torch.no_grad():
         conv.weight = nn.Parameter(kernel_torch)
@@ -60,6 +60,9 @@ def test_convolution():
     np.testing.assert_almost_equal(conv.weight.grad.detach().cpu().numpy(), d_weight)
     print("Pass backwared test for derivative of weight")
 
+    np.testing.assert_almost_equal(input_torch.grad.detach().cpu().numpy(), d_input)
+    print("Pass backwared test for derivative of input tensor")
+    
 def main():
     np.random.seed(42)
     test_convolution()

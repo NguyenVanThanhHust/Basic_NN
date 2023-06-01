@@ -1,3 +1,4 @@
+import math 
 import numpy as np
 from src.layers.layer import Layer
 
@@ -66,7 +67,7 @@ class Conv(Layer):
     
     def backward(self, d_output):
         input_tensor = self.cache["input_tensor"]
-        batch_size, in_channel, input_h, output_w = input_tensor.shape
+        batch_size, in_channel, input_h, input_w = input_tensor.shape
         batch_size, out_channel, output_h, output_w = d_output.shape
 
         ## Calculate derivative of kernel
@@ -88,10 +89,41 @@ class Conv(Layer):
                             d_weight[b, d, c, ky_index, kx_index] = temp_d_weight.mean()
         d_weight = d_weight.mean(0)
         print(self.kernel.shape,  d_weight.shape)            
-          
-        ## Calculate derivative of input
-        d_input = np.zeros((batch_size, out_channel, in_channel, input_h, output_w), dtype=np.float32)
         
+        ## Calculate derivative of input
+        d_input = np.zeros((batch_size, out_channel, in_channel, input_h, input_w), dtype=np.float32)
+        pad_out_y, pad_out_x = self.kernel_size[0] - 1, self.kernel_size[1] - 1 
+        top_pad_out_y, left_pad_out_x = math.floor(self.kernel_size[0] / 2.0), math.floor(self.kernel_size[1] / 2.0) 
+        bottom_pat_out_y, right_pad_out_x = pad_out_y - top_pad_out_y, pad_out_x - left_pad_out_x
+        dilate_out_pad = np.zeros((batch_size, out_channel, input_h, input_w), dtype=np.float32)
+        dilate_out_pad[:, :, top_pad_out_y: output_h+top_pad_out_y, left_pad_out_x: output_w+left_pad_out_x] = d_output[:, :, :, :]
+
+        for b in range(batch_size):
+            for d in range(out_channel):
+                for c in range(in_channel):
+                    try:
+                        for h_index in range(0, input_h - self.kernel_size[0] + 1):
+                            h_start = h_index
+                            h_end = h_start + self.kernel_size[0]
+                            for w_index in range(0, input_w - self.kernel_size[1] + 1):
+                                w_start = w_index
+                                w_end = w_start + self.kernel_size[1]
+                                input_patch = dilate_out_pad[b, d, h_start:h_end, w_start:w_end]                    
+                                input_kernel = self.kernel[d, c, :, :]
+                                input_patch = input_patch[np.newaxis, np.newaxis, np.newaxis, :, :]
+                                input_kernel = input_kernel[np.newaxis, np.newaxis, np.newaxis, :, :]
+                                temp_d_weight = input_patch * input_kernel
+                                d_input[b, d, c, h_start:h_end, w_start:w_end] = temp_d_weight
+                    except Exception as e:
+                        print(e)
+                        print(h_index, h_start, h_end)
+                        print(w_index, w_start, w_end)
+                        print(input_patch.shape)
+                        print(input_kernel.shape)
+                        print(d_input[b, d, c, h_start:h_end, w_start:w_end].shape)
+                        import pdb; pdb.set_trace()
+        d_input = d_input.mean(1)
+                            
         return d_weight / batch_size, d_input
     
     def get_params(self):

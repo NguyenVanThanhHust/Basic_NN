@@ -59,8 +59,7 @@ def test_linear():
     print("Pass backward test")
 
 def main():
-    test_linear_forward()
-    test_linear_backward()
+    test_linear()
     
 if __name__ == "__main__":
     main()
