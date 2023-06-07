@@ -9,6 +9,7 @@ class Conv(Layer):
             stride=(1, 1), \
             padding=(0, 0, 0, 0), \
             name='conv', \
+            reduction_method='mean', \
             kernel_weight=None, \
             ) -> None:
         self.in_channel = in_channel
@@ -21,6 +22,7 @@ class Conv(Layer):
         self.cache = {}
         self.kernel = kernel_weight
         self.name = name
+        self.reduction_method = reduction_method
         self.init()
 
     def init(self):
@@ -87,9 +89,15 @@ class Conv(Layer):
                             d_ouput_patch = d_output[b, d, :, :]
                             d_ouput_patch = d_ouput_patch[np.newaxis, np.newaxis, np.newaxis, :, :]
                             temp_d_weight = input_patch * d_ouput_patch
-                            d_weight[b, d, c, ky_index, kx_index] = temp_d_weight.sum()
-        d_weight = d_weight.sum(0)
-        
+                            if self.reduction_method == "sum":
+                                d_weight[b, d, c, ky_index, kx_index] = temp_d_weight.sum()
+                            else:
+                                d_weight[b, d, c, ky_index, kx_index] = temp_d_weight.mean()
+        if self.reduction_method == "sum":
+            d_weight = d_weight.sum(0)
+        else:
+            d_weight = d_weight.mean(0)
+ 
         rotated_kernel = np.zeros(self.kernel.shape)
         rotated_kernel = np.flip(np.flip(self.kernel, 2), 3)
         for d in range(out_channel):
@@ -98,7 +106,6 @@ class Conv(Layer):
                     for w in range(self.kernel_size[1]):
                         rotated_kernel[d, c, h, w] = self.kernel[d, c, self.kernel_size[0] - h -1, self.kernel_size[1] - w - 1]
         
-        print(rotated_kernel)
         ## Calculate derivative of input
         d_input = np.zeros((batch_size, out_channel, in_channel, input_h, input_w), dtype=np.float32)
         dilated_h = (output_h - 1) * self.stride[0] + 1
@@ -117,7 +124,6 @@ class Conv(Layer):
         pad_w = dilated_w + 2*pad_out_x
         pad_dilated_output = np.zeros((batch_size, out_channel, pad_h, pad_w))
         pad_dilated_output[:, :, pad_out_y: -pad_out_y, pad_out_x: -pad_out_x] = dilated_output
-        print(pad_dilated_output)
 
         for b in range(batch_size):
             for d in range(out_channel):
@@ -136,7 +142,8 @@ class Conv(Layer):
                             d_input[b, d, c, h_index, w_index] = temp_d_weight.sum()
         d_input = d_input.mean(1)
                             
-        return d_weight, d_input / batch_size
+        return d_weight/ batch_size, d_input / batch_size
+
     def get_params(self):
         return self.kernel
 
