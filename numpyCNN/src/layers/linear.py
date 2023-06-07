@@ -28,11 +28,16 @@ class Linear(Layer):
         input_tensor = self.cache["input_tensor"]
         output_tensor = self.cache["output_tensor"]
         batch_size = input_tensor.shape[0]
+        
+        # Calculate derivative of weight
         dw = 1/batch_size * np.dot(input_tensor.T, d_output)
         db = 1/batch_size * d_output.sum(axis=0, keepdims=True)
         assert dw.shape == self.w.shape, "expect same shape, get {} for self.w and {} for dw".format(self.w.shape, dw.shape)
         self.cache.update({'dw':dw, 'db':db})
-        return dw, db
+        
+        # Calculate derivative of input tensor
+        d_input = np.dot(d_output, self.w.T)  
+        return dw, db, d_input / batch_size
 
     def update_params(self, alpha=0.01):
         dw, db = self.cache['dw'], self.cache['db']

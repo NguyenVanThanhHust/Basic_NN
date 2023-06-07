@@ -33,13 +33,14 @@ def test_linear():
         linear.weight = nn.Parameter(torch.from_numpy(linear_numpy.w.T))
         linear.bias = nn.Parameter(torch.from_numpy(linear_numpy.b))
     input_torch = input_torch.double()
+    input_torch.requires_grad = True
     output_torch = linear(input_torch)
 
     # backward numpy
     mse_loss_numpy = MSELoss()
     loss_numpy = mse_loss_numpy.forward(output_numpy, target_numpy)
     d_output = mse_loss_numpy.backward()
-    dw, db = linear_numpy.backward(d_output)
+    dw, db, d_input = linear_numpy.backward(d_output)
     
     # backward torch
     target_torch = torch.from_numpy(target_numpy)
@@ -54,9 +55,14 @@ def test_linear():
     print("Pass forward test")
     np.testing.assert_almost_equal(loss_value_torch.detach().cpu().numpy(), loss_numpy)
     print("Pass loss test")
+
     np.testing.assert_almost_equal(linear.weight.grad.detach().cpu().numpy(), dw.T)
     np.testing.assert_almost_equal(linear.bias.grad.detach().cpu().numpy(), db)
-    print("Pass backward test")
+    print("Pass backward test for weight")
+    
+    # import pdb; pdb.set_trace()
+    np.testing.assert_almost_equal(input_torch.grad.detach().cpu().numpy(), d_input)
+    print("Pass backwared test for derivative of input tensor")
 
 def main():
     test_linear()
