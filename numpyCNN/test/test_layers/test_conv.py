@@ -15,8 +15,6 @@ from src.layers.conv import Conv
 from src.cost import MSELoss, FakeL1Loss
 
 def test_convolution():
-    # How to assign kernel for Conv layer
-    # https://discuss.pytorch.org/t/setting-custom-kernel-for-cnn-in-pytorch/27176/4
 
     # forward numpy
     batch_size = 1
@@ -24,7 +22,7 @@ def test_convolution():
     input_array = np.random.rand(batch_size, in_channel, input_h, input_w)
     out_channel, k_y, k_x = 1, 3, 3
     kernel_numpy = np.random.rand(out_channel, in_channel, k_y, k_x)
-    conv_numpy = Conv(in_channel, out_channel, (k_y, k_x), kernel_weight=kernel_numpy)
+    conv_numpy = Conv(in_channel, out_channel, (k_y, k_x), kernel_weight=kernel_numpy, reduction_method="sum")
     output_numpy = conv_numpy.forward(input_array)
     output_numpy = output_numpy.sum(axis=2)
     
@@ -44,7 +42,7 @@ def test_convolution():
     loss_numpy = mse_loss_numpy.forward(output_numpy, target_numpy)
     d_output = mse_loss_numpy.backward()
     d_output = d_output / max(input_array.shape)
-    d_weight, d_input = conv_numpy.backward(d_output)
+    d_weight, d_input =  conv_numpy.backward(d_output)
 
     # backward torch
     target_torch = torch.from_numpy(target_numpy)
@@ -57,10 +55,14 @@ def test_convolution():
     output_torch_np = output_torch.detach().cpu().numpy()
     np.testing.assert_almost_equal(output_torch_np, output_numpy)
     print("Pass forward test")
-    np.testing.assert_almost_equal(conv.weight.grad.detach().cpu().numpy(), d_weight*-12, decimal=5)
+
+    np.testing.assert_almost_equal(output_torch.grad.detach().cpu().numpy(), d_output, decimal=5)
+    print("Pass backwared test for derivative of output")
+
+    np.testing.assert_almost_equal(conv.weight.grad.detach().cpu().numpy(), d_weight, decimal=5)
     print("Pass backwared test for derivative of weight")
 
-    np.testing.assert_almost_equal(input_torch.grad.detach().cpu().numpy(), d_input*-1, decimal=5)
+    np.testing.assert_almost_equal(input_torch.grad.detach().cpu().numpy(), d_input, decimal=5)
     print("Pass backwared test for derivative of input tensor")
     
 
@@ -104,8 +106,6 @@ def test_mse_loss():
 
     loss.backward()
 
-    # # forward numpy
-    # batch_size = 4
     in_channel, out_channel, input_h, input_w = 1, 1, 6, 5
     out_channel, k_y, k_x = 1, 3, 3
     conv_numpy = Conv(in_channel, out_channel, (k_y, k_x), kernel_weight=k, reduction_method="sum")
@@ -116,14 +116,16 @@ def test_mse_loss():
     target_numpy = np.zeros(output_numpy.shape, dtype=np.float32)
     mse_loss_numpy = MSELoss(reduction_method="mean")
     loss_numpy = mse_loss_numpy.forward(target_numpy, output_numpy)
-    d_output = mse_loss_numpy.backward() / max(x.shape)
+    d_output = -mse_loss_numpy.backward() / max(x.shape)
     d_weight, d_input = conv_numpy.backward(d_output)
     
-    # # backward torch
-
-    output_torch = output_torch.detach().cpu().numpy()
-    np.testing.assert_almost_equal(output_torch, output_numpy)
+    # backward torch
+    output_torch_np = output_torch.detach().cpu().numpy()
+    np.testing.assert_almost_equal(output_torch_np, output_numpy)
     print("Pass forward test")
+
+    np.testing.assert_almost_equal(output_torch.grad.detach().cpu().numpy(), d_output, decimal=5)
+    print("Pass backwared test for derivative of output")
 
     np.testing.assert_almost_equal(conv.weight.grad.detach().cpu().numpy(), d_weight, decimal=5)
     print("Pass backwared test for derivative of weight")
@@ -166,12 +168,8 @@ def test_convolution_manual():
     loss = out.sum()
     loss.backward()
 
-    # # forward numpy
-    # batch_size = 4
     in_channel, out_channel, input_h, input_w = 1, 1, 6, 5
-    # input_array = np.random.rand(batch_size, in_channel, input_h, input_w)
     out_channel, k_y, k_x = 1, 3, 3
-    # kernel_numpy = np.random.rand(out_channel, in_channel, k_y, k_x)
     conv_numpy = Conv(in_channel, out_channel, (k_y, k_x), kernel_weight=k, reduction_method="sum")
     output_numpy = conv_numpy.forward(x)
     output_numpy = output_numpy.sum(axis=2)
@@ -183,13 +181,6 @@ def test_convolution_manual():
     d_output = mse_loss_numpy.backward()
     d_weight, d_input = conv_numpy.backward(d_output)
     
-    # # backward torch
-    # target_torch = torch.from_numpy(target_numpy)
-    # target_torch = target_torch.double()
-    # l2_loss =  nn.MSELoss()
-    # loss_value_torch = l2_loss(output_torch, target_torch)
-    # loss_value_torch.backward()
-
     output_torch = out.detach().cpu().numpy()
     np.testing.assert_almost_equal(output_torch, output_numpy)
     print("Pass forward test")
