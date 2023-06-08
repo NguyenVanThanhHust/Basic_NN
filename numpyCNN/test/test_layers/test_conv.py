@@ -69,7 +69,6 @@ def test_convolution_v2():
     print("Pass backwared test for derivative of input tensor")
 
 
-
 def test_convolution():
     # forward numpy
     batch_size = 1
@@ -77,7 +76,7 @@ def test_convolution():
     input_array = np.random.rand(batch_size, in_channel, input_h, input_w)
     out_channel, k_y, k_x = 1, 3, 3
     kernel_numpy = np.random.rand(out_channel, in_channel, k_y, k_x)
-    conv_numpy = Conv(in_channel, out_channel, (k_y, k_x), kernel_weight=kernel_numpy, reduction_method="sum")
+    conv_numpy = Conv(in_channel, out_channel, (k_y, k_x), kernel_weight=kernel_numpy )
     output_numpy = conv_numpy.forward(input_array)
     output_numpy = output_numpy.sum(axis=2)
     
@@ -163,7 +162,7 @@ def test_mse_loss():
 
     in_channel, out_channel, input_h, input_w = 1, 1, 6, 5
     out_channel, k_y, k_x = 1, 3, 3
-    conv_numpy = Conv(in_channel, out_channel, (k_y, k_x), kernel_weight=k, reduction_method="sum")
+    conv_numpy = Conv(in_channel, out_channel, (k_y, k_x), kernel_weight=k )
     output_numpy = conv_numpy.forward(x)
     output_numpy = output_numpy.sum(axis=2)
     
@@ -178,6 +177,9 @@ def test_mse_loss():
     output_torch_np = output_torch.detach().cpu().numpy()
     np.testing.assert_almost_equal(output_torch_np, output_numpy)
     print("Pass forward test")
+
+    np.testing.assert_almost_equal(loss.detach().cpu().numpy(), loss_numpy, decimal=5)
+    print("Pass loss value test")
 
     np.testing.assert_almost_equal(output_torch.grad.detach().cpu().numpy(), d_output, decimal=5)
     print("Pass backwared test for derivative of output")
@@ -206,6 +208,7 @@ def test_convolution_manual():
         [4,4,4,4,4]
     ]).reshape(1,1,6,5).astype(np.float32)
 
+    x = np.concatenate((x, x), axis=0)
     conv = torch.nn.Conv2d(
         in_channels=1,
         out_channels=1,
@@ -220,12 +223,13 @@ def test_convolution_manual():
     x_tensor.requires_grad = True
     conv.weight = torch.nn.Parameter(torch.from_numpy(k))
     out = conv(x_tensor)
+    out.retain_grad()
     loss = out.sum()
     loss.backward()
 
     in_channel, out_channel, input_h, input_w = 1, 1, 6, 5
     out_channel, k_y, k_x = 1, 3, 3
-    conv_numpy = Conv(in_channel, out_channel, (k_y, k_x), kernel_weight=k, reduction_method="sum")
+    conv_numpy = Conv(in_channel, out_channel, (k_y, k_x), kernel_weight=k )
     output_numpy = conv_numpy.forward(x)
     output_numpy = output_numpy.sum(axis=2)
     
@@ -236,10 +240,13 @@ def test_convolution_manual():
     d_output = mse_loss_numpy.backward()
     d_weight, d_input = conv_numpy.backward(d_output)
     
-    output_torch = out.detach().cpu().numpy()
-    np.testing.assert_almost_equal(output_torch, output_numpy)
+    output_torch_np = out.detach().cpu().numpy()
+    np.testing.assert_almost_equal(output_torch_np, output_numpy)
     print("Pass forward test")
 
+    np.testing.assert_almost_equal(out.grad.detach().cpu().numpy(), d_output)
+    print("Pass backwared test for derivative of output")
+    
     np.testing.assert_almost_equal(conv.weight.grad.detach().cpu().numpy(), d_weight)
     print("Pass backwared test for derivative of weight")
 
@@ -248,9 +255,9 @@ def test_convolution_manual():
 
 def main():
     np.random.seed(42)
-    # test_convolution_manual()
-    # test_mse_loss()
-    # test_convolution()
+    test_convolution_manual()
+    test_mse_loss()
+    test_convolution()
     test_convolution_v2()
 
 if __name__ == "__main__":
