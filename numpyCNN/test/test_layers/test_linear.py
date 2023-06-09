@@ -60,7 +60,6 @@ def test_linear():
     np.testing.assert_almost_equal(linear.bias.grad.detach().cpu().numpy(), db)
     print("Pass backward test for weight")
     
-    # import pdb; pdb.set_trace()
     np.testing.assert_almost_equal(input_torch.grad.detach().cpu().numpy(), d_input)
     print("Pass backwared test for derivative of input tensor")
 

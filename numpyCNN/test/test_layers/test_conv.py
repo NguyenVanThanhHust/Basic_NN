@@ -25,7 +25,7 @@ def test_convolution_v2():
     out_channel, in_channel, k_y, k_x = 8, 3, 4, 3
     kernel_numpy = np.random.rand(out_channel, in_channel, k_y, k_x)
     kernel_numpy = np.round(kernel_numpy, 4)
-    conv_numpy = Conv(3, 8, (4, 3), kernel_weight=kernel_numpy, reduction_method="mean")
+    conv_numpy = Conv(3, 8, (4, 3), kernel_weight=kernel_numpy)
     output_numpy = conv_numpy.forward(input_array)
     output_numpy = output_numpy.sum(axis=2)
     

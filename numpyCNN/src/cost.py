@@ -30,7 +30,8 @@ class MSELoss(CostFunction):
     def backward(self,):
         gt = self.cache["gt"]
         pred = self.cache["pred"]
-        cost = (pred - gt)
+        batch_size = gt.shape[0]
+        cost = (pred - gt) / batch_size
         return cost
 
 class FakeL1Loss(CostFunction):

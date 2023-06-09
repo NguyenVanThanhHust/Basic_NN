@@ -70,7 +70,6 @@ class Conv(Layer):
         batch_size, in_channel, input_h, input_w = input_tensor.shape
         batch_size, out_channel, output_h, output_w = d_output.shape
 
-
         ## Calculate derivative of kernel
         d_weight = np.zeros((batch_size, out_channel, in_channel, self.kernel_size[0], self.kernel_size[1]), dtype=np.float32)
         for b in range(batch_size):
