@@ -1,8 +1,8 @@
 import os, sys
 import numpy as np
 
-class Layer:
-    def __init__(self, name, input_dim, output_dim) -> None:
+class Dropout(Layer):
+    def __init__(self, prob=0.5, name="drop_out") -> None:
         """
         Initializes the layer
         
@@ -11,9 +11,11 @@ class Layer:
         input_dim: int or tuple
             Shape of the input data
         """
-        raise NotImplementedError
-    
-    def forward(self, input, training):
+        self.prob = prob
+        self.name = name
+        self.cache = None 
+        
+    def forward(self, input, training=True):
         """
         Propagates forward
         
@@ -25,10 +27,17 @@ class Layer:
         Return:
         numpy.array: output of this layer
         """
-        raise NotImplementedError
-    
+        if training:
+            input_shape = input.shape
+            random_matrix = np.random.rand(input_shape)
+            random_matrix = random_matrix.round()
+            self.cache = random_matrix
+            return np.multiply(input, random_matrix)
+        else:
+            return input 
+               
     def backward(self, da):
-        raise NotImplementedError
+        return np.multiply(self.cache, da) 
 
     def update_params(self):
         raise NotImplementedError
@@ -37,7 +46,7 @@ class Layer:
         raise NotImplementedError
 
     def get_output_dim(self, ):
-        raise NotImplementedError
+        return self.cache.shape
     
     def __repr__(self) -> str:
         raise NotImplementedError

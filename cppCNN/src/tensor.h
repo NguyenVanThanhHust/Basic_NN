@@ -12,6 +12,7 @@ public:
     float *data;
     Tensor(std::vector<int> size_);
     ~Tensor();
+    float operator[](int postion);
 };
 
 #endif

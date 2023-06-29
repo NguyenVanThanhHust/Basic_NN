@@ -15,3 +15,8 @@ Tensor::~Tensor()
 {
     delete[] data;
 };
+
+float Tensor::operator[](int position)
+{
+    return data[position];
+}
