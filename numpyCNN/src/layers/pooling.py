@@ -1,7 +1,8 @@
 import os, sys
 import numpy as np
+from src.layers.layer import Layer
 
-class Layer:
+class Pooling(Layer):
     def __init__(self, name, input_dim, output_dim) -> None:
         """
         Initializes the layer
@@ -11,7 +12,8 @@ class Layer:
         input_dim: int or tuple
             Shape of the input data
         """
-        raise NotImplementedError
+        self.input_dim = input_dim
+        self.name = name
     
     def forward(self, input, training):
         """

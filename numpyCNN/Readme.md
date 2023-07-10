@@ -1,3 +1,3 @@
 # TODO
-- [ ] Replace raw test with compare with Pytorch for Linear layer
-- [ ] Backward implementation for Convolution
+- [x] Replace raw test with compare with Pytorch for Linear layer
+- [x] Backward implementation for Convolution
